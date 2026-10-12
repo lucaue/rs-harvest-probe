@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Colhe links de episodio dos dramas dublados. Roda dentro de um runner do GitHub.
 Uso: python3 harvest_dub.py <shard> <total>
 Le queue.json (lista de entradas drama x idioma) e grava out/shard_<n>.json
@@ -63,7 +63,7 @@ def main():
             achou = M3U8.search(html or "")
             if achou:
                 links.append({"ep": ep, "slug": slug, "m3u8": achou.group(0)})
-            time.sleep(0.25)
+            time.sleep(0.7)
         if links:
             res[bid] = {"drama_pt": item.get("drama_pt"), "book_pt": item.get("book_pt"),
                         "idioma": item.get("idioma"), "eps_declarados": item.get("eps"),
@@ -79,3 +79,4 @@ def main():
 
 
 main()
+
