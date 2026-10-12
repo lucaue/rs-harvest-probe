@@ -1,0 +1,26 @@
+﻿name: teste-ip
+on: workflow_dispatch:
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 3
+      matrix:
+        n: [1, 2, 3]
+    steps:
+      - name: de onde eu saio e o ReelShort responde?
+        run: |
+          echo "=== runner ${{ matrix.n }} ==="
+          IP=$(curl -s --max-time 20 https://api.ipify.org)
+          echo "IP de saida: $IP"
+          echo "ASN/rede:"; curl -s --max-time 20 "https://ipinfo.io/$IP/org" || true
+          SLUG="episode-2-entre-irmaos-69c5dd2160b76d39c70e8e94"
+          CODE=$(curl -s -o /tmp/p.html -w "%{http_code}" --max-time 30 \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36" \
+            -H "Referer: https://www.reelshort.com/" \
+            "https://www.reelshort.com/episodes/$SLUG")
+          echo "pagina de episodio -> http=$CODE  bytes=$(wc -c < /tmp/p.html)"
+          if grep -q "gokuProps" /tmp/p.html; then echo "RESULTADO: WAF BLOQUEOU"; 
+          elif grep -q "m3u8" /tmp/p.html; then echo "RESULTADO: PASSOU e veio com m3u8"; 
+          else echo "RESULTADO: resposta inesperada"; fi
+          head -c 200 /tmp/p.html | tr -d '\n'; echo
